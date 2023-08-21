@@ -17,7 +17,9 @@ public class DAOCidade {
     }
     
     public boolean salvar(Cidade obj) {
+        System.out.println("salvando");
         if(obj.getCodigoCidade()==null) {
+            System.out.println("salvando mesmo");
             Integer codigo = Dados.listaCidade.size()+1;
             obj.setCodigoCidade(codigo);
             Dados.listaCidade.add(obj);
