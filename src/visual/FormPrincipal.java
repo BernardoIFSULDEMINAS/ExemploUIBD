@@ -5,6 +5,7 @@
  */
 package visual;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 /**
@@ -83,7 +84,14 @@ public class FormPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuCidadeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCidadeActionPerformed
-        // TODO add your handling code here:
+        FormCidade fc = new FormCidade(this, true);
+        // O construtor leva dois parâmetros: a janela pai e um booleano especificando
+        // se é uma janela modal (uma janela subordinada a outra).
+        fc.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        // A janela não fecha pelo x, a não ser que você programe a operação
+        fc.setLocationRelativeTo(null); // por que no centro da tela? Não seria melhor se fosse no centro dessa janela?
+        fc.setResizable(false); // Por quê?
+        fc.setVisible(true); //visualiza o formCidade
     }//GEN-LAST:event_menuCidadeActionPerformed
 
     private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSobreActionPerformed
