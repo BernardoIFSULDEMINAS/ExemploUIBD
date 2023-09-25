@@ -5,7 +5,9 @@
  */
 package modelo;
 
+import java.beans.Transient;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -16,7 +18,7 @@ import java.util.Objects;
 public class Funcionario implements Serializable {
     private Integer codigoFuncionario;
     private String nomeFuncionario;
-    private Double salarioFUncionario;
+    private Double salarioFuncionario;
     private Calendar nascimentoFuncionario;
     private Cidade objCidadeFuncionario;
     public Funcionario(){}
@@ -37,12 +39,12 @@ public class Funcionario implements Serializable {
         this.nomeFuncionario = nomeFuncionario;
     }
 
-    public Double getSalarioFUncionario() {
-        return salarioFUncionario;
+    public Double getSalarioFuncionario() {
+        return salarioFuncionario;
     }
 
-    public void setSalarioFUncionario(Double salarioFUncionario) {
-        this.salarioFUncionario = salarioFUncionario;
+    public void setSalarioFuncionario(Double salarioFuncionario) {
+        this.salarioFuncionario = salarioFuncionario;
     }
 
     public Calendar getNascimentoFuncionario() {
@@ -84,5 +86,11 @@ public class Funcionario implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    @Transient // não persistente
+    public String getNascimentoFormatado() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(getNascimentoFuncionario().getTime());
     }
 }

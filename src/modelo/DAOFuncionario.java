@@ -18,7 +18,7 @@ public class DAOFuncionario {
     
     public boolean salvar(Funcionario obj) {
         if(obj.getCodigoFuncionario()==null) {
-            Integer codigo = Dados.listaFuncionario.size()-1;
+            Integer codigo = Dados.listaFuncionario.size()+1;
             obj.setCodigoFuncionario(codigo);
             Dados.listaFuncionario.add(obj);
         }

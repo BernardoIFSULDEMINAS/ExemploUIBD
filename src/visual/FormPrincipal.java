@@ -7,7 +7,6 @@ package visual;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-
 /**
  *
  * @author 13828523633
@@ -51,6 +50,11 @@ public class FormPrincipal extends javax.swing.JFrame {
         menuCadastro.add(menuCidade);
 
         menuFuncionario.setText("Funcionário");
+        menuFuncionario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuFuncionarioActionPerformed(evt);
+            }
+        });
         menuCadastro.add(menuFuncionario);
 
         barraMenu.add(menuCadastro);
@@ -97,6 +101,17 @@ public class FormPrincipal extends javax.swing.JFrame {
     private void menuSobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSobreActionPerformed
         JOptionPane.showMessageDialog(null, "Sistema de Cadastro\nVersão 1.0\nEste software é software livre: você pode distribui-lo sobre a versão 3 da Licença Pública Geral (GPL-3.0)");
     }//GEN-LAST:event_menuSobreActionPerformed
+
+    private void menuFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFuncionarioActionPerformed
+        FormFuncionario ff = new FormFuncionario(this, true);
+        // O construtor leva dois parâmetros: a janela pai e um booleano especificando
+        // se é uma janela modal (uma janela subordinada a outra).
+        ff.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        // A janela não fecha pelo x, a não ser que você programe a operação
+        ff.setLocationRelativeTo(null); // por que no centro da tela? Não seria melhor se fosse no centro dessa janela?
+        ff.setResizable(false); // Por quê?
+        ff.setVisible(true); //visualiza o formCidade
+    }//GEN-LAST:event_menuFuncionarioActionPerformed
 
     /**
      * @param args the command line arguments

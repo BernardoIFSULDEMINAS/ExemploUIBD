@@ -5,11 +5,13 @@
  */
 package visual;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import modelo.Cidade;
 import modelo.DAOCidade;
 import modelo.DAOFuncionario;
+import modelo.DAOCidade;
 import modelo.Funcionario;
 /**
  *
@@ -18,6 +20,7 @@ import modelo.Funcionario;
 public class FormFuncionario extends javax.swing.JDialog {
 
     DAOFuncionario daoFuncionario = new DAOFuncionario();
+    DAOCidade daoCidade = new DAOCidade();
 
     /**
      * Creates new form FormCidade
@@ -27,8 +30,13 @@ public class FormFuncionario extends javax.swing.JDialog {
         initComponents();
         atualizaTabela();
         trataEdicao(false);
+        listCidade.clear();
+        listCidade.addAll(daoCidade.getLista());
     }
-
+    public <E extends Throwable, A> A sneakyThrow(Throwable e) throws E {
+        throw (E) e;
+    }
+    
     public void atualizaTabela() {
         listFuncionario.clear();
         listFuncionario.addAll(daoFuncionario.getLista());
@@ -67,12 +75,16 @@ public class FormFuncionario extends javax.swing.JDialog {
             txtCodigo.setText("");
             btnEditar.setEnabled(false);
             txtNome.setText("");
+            txtNascimento.setText("");
+            txtSalario.setText("");
         } else {
             btnExcluir.setEnabled(!editando);
         }
         btnNovo.setEnabled(!editando);
         btnFechar.setEnabled(!editando);
         txtNome.setEnabled(editando);
+        txtNascimento.setEnabled(editando);
+        txtSalario.setEnabled(editando);
         cbxCidade.setEnabled(editando);
         tblFuncionario.setEnabled(editando);
     }
@@ -83,8 +95,18 @@ public class FormFuncionario extends javax.swing.JDialog {
             txtNome.requestFocus();
             return false;
         }
+        if(!(txtNascimento.getText().length()>0)) {
+            JOptionPane.showMessageDialog(null, "Informe a data de nascimento");
+            txtNascimento.requestFocus();
+            return false;
+        }
+        if(!(txtSalario.getText().length()>0)) {
+            JOptionPane.showMessageDialog(null, "Informe o salário do funcionário");
+            txtSalario.requestFocus();
+            return false;
+        }
         if(!(cbxCidade.getSelectedIndex()>=0)) {
-            JOptionPane.showMessageDialog(null, "Selecione uma UF");
+            JOptionPane.showMessageDialog(null, "Selecione uma cidade");
             cbxCidade.requestFocus();
             return false;
         }
@@ -105,6 +127,7 @@ public class FormFuncionario extends javax.swing.JDialog {
         listFuncionario = org.jdesktop.observablecollections.ObservableCollections.observableList(new ArrayList<Funcionario>());
         listCidade = org.jdesktop.observablecollections.ObservableCollections.observableList(new ArrayList<Cidade>())
         ;
+        converteData = new modelo.ConverteData();
         painelNavegacao = new javax.swing.JPanel();
         btnPrimeiro = new javax.swing.JButton();
         btnAnterior = new javax.swing.JButton();
@@ -129,7 +152,13 @@ public class FormFuncionario extends javax.swing.JDialog {
         txtNome = new javax.swing.JTextField();
         cbxCidade = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        txtNascimento = new javax.swing.JFormattedTextField();
+        javax.swing.text.MaskFormatter maskData = null;
+        try{
+            maskData = new javax.swing.text.MaskFormatter("##/##/####");
+            maskData.setPlaceholderCharacter('_');}
+        catch(ParseException e) {
+            sneakyThrow(e);}
+        txtNascimento = new javax.swing.JFormattedTextField(maskData);
         jLabel5 = new javax.swing.JLabel();
         txtSalario = new javax.swing.JTextField();
 
@@ -182,20 +211,21 @@ public class FormFuncionario extends javax.swing.JDialog {
         abaListagem.setLayout(new java.awt.BorderLayout());
 
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listFuncionario, tblFuncionario);
-        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigoCidade}"));
+        org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${codigoFuncionario}"));
         columnBinding.setColumnName("Código");
+        columnBinding.setColumnClass(Integer.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nomeFuncionario}"));
         columnBinding.setColumnName("Nome");
         columnBinding.setColumnClass(String.class);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${objCidadeFuncionario}"));
-        columnBinding.setColumnName("Salário");
-        columnBinding.setColumnClass(modelo.Cidade.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nascimentoFuncionario}"));
-        columnBinding.setColumnName("Nascimento");
-        columnBinding.setColumnClass(java.util.Calendar.class);
-        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${objCidadeFuncionario}"));
         columnBinding.setColumnName("Cidade");
         columnBinding.setColumnClass(modelo.Cidade.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${nascimentoFormatado}"));
+        columnBinding.setColumnName("Data de Nascimento");
+        columnBinding.setColumnClass(String.class);
+        columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${salarioFuncionario}"));
+        columnBinding.setColumnName("Salário");
+        columnBinding.setColumnClass(Double.class);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         jScrollPane1.setViewportView(tblFuncionario);
@@ -255,7 +285,7 @@ public class FormFuncionario extends javax.swing.JDialog {
 
         txtCodigo.setEditable(false);
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblFuncionario, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.codigoCidade}"), txtCodigo, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblFuncionario, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.codigoFuncionario}"), txtCodigo, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         txtCodigo.addActionListener(new java.awt.event.ActionListener() {
@@ -264,7 +294,7 @@ public class FormFuncionario extends javax.swing.JDialog {
             }
         });
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblFuncionario, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.nomeCidade}"), txtNome, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblFuncionario, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.nomeFuncionario}"), txtNome, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, listCidade, cbxCidade);
@@ -275,11 +305,12 @@ public class FormFuncionario extends javax.swing.JDialog {
         jLabel4.setText("Salário:");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblFuncionario, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.nascimentoFuncionario}"), txtNascimento, org.jdesktop.beansbinding.BeanProperty.create("value"));
+        binding.setConverter(converteData);
         bindingGroup.addBinding(binding);
 
         jLabel5.setText("Nascimento:");
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblFuncionario, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.salarioFUncionario}"), txtSalario, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblFuncionario, org.jdesktop.beansbinding.ELProperty.create("${selectedElement.salarioFuncionario}"), txtSalario, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout abaDadosLayout = new javax.swing.GroupLayout(abaDados);
@@ -498,6 +529,7 @@ public class FormFuncionario extends javax.swing.JDialog {
     private javax.swing.JButton btnSalvar;
     private javax.swing.JButton btnUltimo;
     private javax.swing.JComboBox<String> cbxCidade;
+    private modelo.ConverteData converteData;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
