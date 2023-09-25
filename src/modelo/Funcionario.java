@@ -19,7 +19,7 @@ public class Funcionario implements Serializable {
     private Double salarioFUncionario;
     private Calendar nascimentoFuncionario;
     private Cidade objCidadeFuncionario;
-    private Funcionario(){}
+    public Funcionario(){}
 
     public Integer getCodigoFuncionario() {
         return codigoFuncionario;
