@@ -5,6 +5,8 @@
  */
 package modelo;
 
+
+
 import java.text.ParseException;
 import org.jdesktop.beansbinding.Converter;
 import java.util.Calendar;
@@ -20,7 +22,11 @@ public class ConverteData extends Converter<Calendar,String> {
     public String convertForward(Calendar value) {
         return sdf.format(value.getTime());
     }
-
+    
+    public ConverteData() {
+        sdf.setLenient(false);
+    }
+    
     @Override
     public Calendar convertReverse(String value) {
         Calendar c = Calendar.getInstance();
@@ -29,7 +35,7 @@ public class ConverteData extends Converter<Calendar,String> {
             return c;
         } catch (ParseException e) {
             System.out.println("Erro quando processando data: " + e.getMessage());
-            return null;
+            throw new RuntimeException("Não pôde processar data");
         }
         
     }

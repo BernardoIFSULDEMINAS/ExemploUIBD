@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import modelo.Cidade;
+import modelo.ConverteData;
 import modelo.DAOCidade;
 import modelo.DAOFuncionario;
 import modelo.DAOCidade;
@@ -100,11 +101,26 @@ public class FormFuncionario extends javax.swing.JDialog {
             txtNascimento.requestFocus();
             return false;
         }
+        try {
+            converteData.convertReverse(txtNascimento.getText());
+        } catch(RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "Informe uma data válida no formato dd/mm/yyyy");
+            txtNascimento.requestFocus();
+            return false;
+        }
         if(!(txtSalario.getText().length()>0)) {
             JOptionPane.showMessageDialog(null, "Informe o salário do funcionário");
             txtSalario.requestFocus();
             return false;
         }
+        try {
+            Double.parseDouble(txtSalario.getText());
+        } catch(NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Informe o salário do funcionário com números");
+            txtSalario.requestFocus();
+            return false;
+        }
+        
         if(!(cbxCidade.getSelectedIndex()>=0)) {
             JOptionPane.showMessageDialog(null, "Selecione uma cidade");
             cbxCidade.requestFocus();

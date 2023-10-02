@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Objects;
+import modelo.ConverteData;
 
 /**
  *
@@ -90,7 +91,7 @@ public class Funcionario implements Serializable {
     
     @Transient // não persistente
     public String getNascimentoFormatado() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        return sdf.format(getNascimentoFuncionario().getTime());
+        ConverteData cd = new ConverteData();
+        return cd.convertForward(getNascimentoFuncionario());
     }
 }
