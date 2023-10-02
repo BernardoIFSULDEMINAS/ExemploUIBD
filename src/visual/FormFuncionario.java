@@ -126,7 +126,6 @@ public class FormFuncionario extends javax.swing.JDialog {
             cbxCidade.requestFocus();
             return false;
         }
-        
         return true;
     }
 
