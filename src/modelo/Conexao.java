@@ -6,6 +6,9 @@
 package modelo;
 
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
 
 /**
  *
@@ -46,5 +49,26 @@ public class Conexao {
             System.out.println("Erro de sql: "+e.getMessage());
             return null;
         }
+    }
+    
+    public static PreparedStatement aplicar(String sql, Object... params) throws SQLException {
+        PreparedStatement pst = getPreparedStatement(sql);
+        for(int i = 0; i < params.length; i++) {
+            Object par = params[i];
+            Class<?> classe = par.getClass();
+            if(classe.equals(String.class)) {
+                pst.setString(i+1, (String)par);
+            } else if (classe.equals(Integer.class)) {
+                pst.setInt(i+1, (Integer)par);
+            } else if (Calendar.class.isAssignableFrom(classe)) {
+                java.util.Date d = ((Calendar)par).getTime();
+                pst.setDate(i+1, new java.sql.Date(d.getTime()));
+            } else if (classe.equals(Double.class)) {
+                pst.setDouble(i+1, (Double)par);
+            } else {
+                throw new IllegalArgumentException("Tipo " + par.getClass() + " não suportado!");
+            }
+        }
+        return pst;
     }
 }
